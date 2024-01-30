@@ -90,11 +90,13 @@ pub async fn list_directory(directory_path: String) -> Result<Vec<String>, Serve
 
 
 #[server()]
-pub async fn open_hcl_file(file_path: String) -> Result<String, ServerFnError> {
+pub async fn open_hcl_file(tf_file: String) -> Result<String, ServerFnError> {
     use std::fs::{ OpenOptions};
 
     use std::io::{Read};
-    let mut file = OpenOptions::new().read(true).write(true).open(file_path)?;
+    let _path = tf_file;
+
+    let mut file = OpenOptions::new().read(true).write(true).open("temp.tf")?;
 
     // Read the file contents into a string
     let mut content = String::new();

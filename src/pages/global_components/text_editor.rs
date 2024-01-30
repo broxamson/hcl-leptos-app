@@ -1,10 +1,15 @@
-use crate::pages::global_components::api::make_branch;
+use crate::pages::global_components::api::{open_hcl_file, make_branch};
 use leptos::*;
 
 #[component]
 pub fn Monaco() -> impl IntoView {
     use crate::pages::global_components::selectors::ListDirectories;
+    let tf_dir = "".to_string();
+
+    let load_hcl_file = create_resource(move || tf_dir.clone(), open_hcl_file);
+
     view! {
+
         <link
             rel="stylesheet"
             data-name="vs/editor/editor.main"
@@ -44,25 +49,45 @@ pub fn Monaco() -> impl IntoView {
         <div id="editor" style="height:400px;border:1px solid black;"></div>
 
         <button onclick="saveText()">Edit</button>
+         {move || {
+                load_hcl_file
+                    .get()
+                    .map(|wrapped| {
+                        wrapped
+                            .map(|file| {
+                                view! {
         <script>
             require.config({ paths: { "vs": "https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.45.0/min/vs/" } });
-            
+
             require(["vs/editor/editor.main"], function () {
               var editor = monaco.editor.create(document.getElementById("editor"), {
-                value: "resource \"aws_s3_bucket\" \"PLEASE_SELECT_BRANCH_AND_TERRAFORM_FILE_TO_EDIT\" {\n  bucket = \"my-tf-test-bucket\"\n  acl    = \"private\"\n}",
+                value: file,
                 language: "hcl",
                 theme: "vs-dark" ,
                 lineNumbers: "on"//
               });
-            
-            
+
+
             });
 
-        // 
+        //
 
         </script>
     }
-}
+                            })
+                    })
+            }}
+    }
+    }
+
+
+
+
+
+
+
+
+
 
 #[component]
 pub fn CreateBranch() -> impl IntoView {
