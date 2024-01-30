@@ -64,32 +64,29 @@ pub fn ListFiles(selected: ReadSignal<String>) -> impl IntoView {
                 terraform_files
                     .get()
                     .map(|tfl| {
-                        tfl
-                            .map(|tf_files| {
-                                view! {
-                                    <select on:change=move |ev| {
-                                        set_selected(event_target_value(&ev));
-                                    }>
+                        tfl.map(|tf_files| {
+                            view! {
+                                <select on:change=move |ev| {
+                                    set_selected(event_target_value(&ev));
+                                }>
 
-                                        <option disabled selected>
-                                            "SELECT FILE"
-                                        </option>
+                                    <option disabled selected>
+                                        "SELECT FILE"
+                                    </option>
 
-                                            <For
-                                                each=move || tf_files.clone()
-                                                key=|n| n.clone()
-                                                let:list_files
-                                            >
-                                                <option value=&list_files>{&list_files}</option>
+                                    <For
+                                        each=move || tf_files.clone()
+                                        key=|n| n.clone()
+                                        let:list_files
+                                    >
+                                        <option value=&list_files>{&list_files}</option>
 
+                                    </For>
 
-
-                                            </For>
-
-                                    </select>
-                                    <p>{read_selected}</p>
-                                }
-                            })
+                                </select>
+                                <p>{read_selected}</p>
+                            }
+                        })
                     })
             }}
 

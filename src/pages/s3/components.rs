@@ -24,12 +24,9 @@ pub fn CreateS3() -> impl IntoView {
     };
 
     view! {
-            <h3>"Create S3 Bucket "</h3>
+        <h3>"Create S3 Bucket "</h3>
         <form on:submit=on_create_bucket>
-            <input type="text"
-                value=bucket_name
-                node_ref=input_element
-            />
+            <input type="text" value=bucket_name node_ref=input_element/>
             <input type="submit" value="Submit"/>
         </form>
         <p>{status}</p>
