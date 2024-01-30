@@ -9,6 +9,13 @@ pub fn Monaco() -> impl IntoView {
     let load_hcl_file = create_resource(move || tf_dir.clone(), open_hcl_file);
 
     view! {
+        {move || {
+            load_hcl_file
+                .get()
+                .map(|wrapped| {
+                    wrapped
+                        .map(|file| {
+                            view! {
         <link
             rel="stylesheet"
             data-name="vs/editor/editor.main"
@@ -48,13 +55,7 @@ pub fn Monaco() -> impl IntoView {
         <div id="editor" style="height:400px;border:1px solid black;"></div>
 
         <button onclick="saveText()">Edit</button>
-        {move || {
-            load_hcl_file
-                .get()
-                .map(|wrapped| {
-                    wrapped
-                        .map(|file| {
-                            view! {
+
                                 <script>
                                     require.config({ paths: { "vs": "https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.45.0/min/vs/" } });
                                     
