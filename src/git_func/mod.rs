@@ -1,29 +1,24 @@
-use cfg_if::cfg_if;
-
-cfg_if! { if #[cfg(feature = "ssr")] {
-
-
-use std::path::Path;
+#[cfg(feature = "ssr")]
 use anyhow::Error;
-
-
+#[cfg(feature = "ssr")]
 use dotenvy_macro::dotenv;
+#[cfg(feature = "ssr")]
 use git2::{
-    BranchType, Cred, FetchOptions, Object, PushOptions, RemoteCallbacks, Repository,
-    Signature,
+    BranchType, Cred, FetchOptions, Object, PushOptions, RemoteCallbacks, Repository, Signature,
 };
+#[cfg(feature = "ssr")]
+use std::path::Path;
+
+#[cfg(feature = "ssr")]
 extern crate git2;
+#[cfg(feature = "ssr")]
 use git2::build::{CheckoutBuilder, RepoBuilder};
-use reqwest::Client;
-use serde::{Deserialize, Serialize};
-use serde_json::json;
+
+#[cfg(feature = "ssr")]
 use tokio::fs::remove_dir_all;
 
-
+#[cfg(feature = "ssr")]
 pub async fn clone_repo(repo_url: &str, local_path: &Path) -> Result<(), Error> {
-
-
-
     let mut callbacks = RemoteCallbacks::new();
     let username_env = dotenv!("BITBUCKET_USER");
     let password_env = dotenv!("BITBUCKET_PASSWORD");
@@ -42,9 +37,8 @@ pub async fn clone_repo(repo_url: &str, local_path: &Path) -> Result<(), Error> 
 
     Ok(())
 }
-
+#[cfg(feature = "ssr")]
 pub async fn create_new_branch(repo_path: &Path, branch_name: &str) -> Result<(), Error> {
-
     // Open the existing Git repository
     let repo = Repository::open(repo_path)?;
 
@@ -62,7 +56,7 @@ pub async fn create_new_branch(repo_path: &Path, branch_name: &str) -> Result<()
 
     Ok(())
 }
-
+#[cfg(feature = "ssr")]
 pub async fn checkout_branch(repo_path: &Path, branch_name: &str) -> Result<(), git2::Error> {
     // Open the Git repository
     let repo = Repository::open(repo_path)?;
@@ -86,8 +80,7 @@ pub async fn checkout_branch(repo_path: &Path, branch_name: &str) -> Result<(), 
     Ok(())
 }
 
-
-
+#[cfg(feature = "ssr")]
 pub async fn commit_changes(
     repo_path: &Path,
     author_name: &str,
@@ -136,9 +129,8 @@ pub async fn commit_changes(
 
     Ok(())
 }
-
+#[cfg(feature = "ssr")]
 pub async fn push_to_repository(repo_path: &Path, branch_name: &str) -> Result<String, String> {
-
     let username_env = dotenv!("BITBUCKET_USER");
     let password_env = dotenv!("BITBUCKET_PASSWORD");
     // Open the Git repository
@@ -157,7 +149,7 @@ pub async fn push_to_repository(repo_path: &Path, branch_name: &str) -> Result<S
     let mut callbacks = RemoteCallbacks::new();
     callbacks.credentials(|_url, _username, _allowed| {
         // Provide your credentials here
-        Cred::userpass_plaintext(username_env, password_env )
+        Cred::userpass_plaintext(username_env, password_env)
     });
 
     // Set up push options with remote callbacks
@@ -168,14 +160,14 @@ pub async fn push_to_repository(repo_path: &Path, branch_name: &str) -> Result<S
     let refspec = format!("refs/heads/{}:refs/heads/{}", branch_name, branch_name);
     match remote.push(&[&refspec], Some(&mut push_options)) {
         Ok(_) => {
-                let message = format!("Pushed branch '{}'", branch_name);
+            let message = format!("Pushed branch '{}'", branch_name);
             println!("{}", &message);
             Ok(message)
         }
         Err(e) => Err(format!("Failed to push branch '{}': {}", branch_name, e)),
     }
 }
-
+#[cfg(feature = "ssr")]
 pub async fn git_add_file(repo_path: &Path, file_path: &str) -> Result<(), git2::Error> {
     // Open the Git repository
     let repo = Repository::open(repo_path)?;
@@ -192,68 +184,8 @@ pub async fn git_add_file(repo_path: &Path, file_path: &str) -> Result<(), git2:
     Ok(())
 }
 
-#[derive(Serialize, Deserialize, Clone)]
-pub(crate) struct PullRequest {
-    // Define the fields you need for your pull request
-    // For example:
-    pub title: String,
-    pub description: String,
-    pub source_branch: String,
-    pub destination_branch: String,
-    pub base_url: String,
-    pub project_key: String,
-    pub repository_slug: String,
-    // Add other fields as needed
-}
-
-pub(crate) async fn create_pull_request(pull_request: PullRequest) -> Result<(), reqwest::Error> {
-    let base_url = pull_request.base_url;
-    let project_key = pull_request.project_key;
-    let repository_slug = pull_request.repository_slug;
-    let url = format!(
-        "https://api.{}/2.0/repositories/{}/{}/pullrequests",
-        base_url, project_key, repository_slug
-    );
-
-    let client = Client::new();
-
-    let payload = json!({
-        "title": pull_request.title,
-        "description": pull_request.description,
-        "toRef": {
-            "id": format!("refs/heads/{}", pull_request.destination_branch),
-            "type": "BRANCH",
-            // Add other fields as needed
-        },
-        "fromRef": {
-            "id": format!("refs/heads/{}", pull_request.source_branch),
-            "type": "BRANCH",
-            // Add other fields as needed
-        },
-    });
-
-    let response = client
-        .post(&url)
-        .header("Accept", "application/json")
-        .header("Content-Type", "application/json")
-        .header("Authorization", "Bearer <access_token>")
-        .json(&payload)
-        .send()
-        .await?;
-
-    if response.status().is_success() {
-        println!("Pull request created successfully.");
-    } else {
-        eprintln!(
-            "Failed to create pull request. Status code: {:?}",
-            response.status()
-        );
-    }
-
-    Ok(())
-}
-
-pub async fn delete_comitted_change(dir: &str) -> Result<(),  Error> {
+#[cfg(feature = "ssr")]
+pub async fn delete_comitted_change(dir: &str) -> Result<(), Error> {
     let file_path = Path::new(&dir);
     println!("{}", file_path.display());
     if file_path.exists() {
@@ -262,5 +194,3 @@ pub async fn delete_comitted_change(dir: &str) -> Result<(),  Error> {
     }
     Ok(())
 }
-    }
-    }

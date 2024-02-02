@@ -54,8 +54,6 @@ pub fn ListFiles(selected: ReadSignal<String>) -> impl IntoView {
     let terraform_files = create_resource(tf_dir, list_directory);
     let (read_selected, set_selected) = create_signal("".to_string());
 
-
-
     view! {
         <p>Selected Branch: {selected}</p>
         <Suspense>
@@ -92,6 +90,4 @@ pub fn ListFiles(selected: ReadSignal<String>) -> impl IntoView {
 
         </Suspense>
     }
-
-
 }

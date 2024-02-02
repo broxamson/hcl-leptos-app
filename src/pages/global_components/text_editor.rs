@@ -1,8 +1,6 @@
-use crate::pages::global_components::api::{open_hcl_file, make_branch};
+use crate::pages::global_components::api::{make_branch, open_hcl_file};
 use leptos::*;
 use leptos_meta::*;
-
-
 
 #[component]
 pub fn Monaco() -> impl IntoView {
@@ -11,7 +9,6 @@ pub fn Monaco() -> impl IntoView {
 
     let terraform_file = create_resource(move || tf_dir.clone(), open_hcl_file);
     provide_meta_context();
-
 
     view! {
         <Suspense>
@@ -64,7 +61,7 @@ pub fn Monaco() -> impl IntoView {
                                 view! {
                                     <Script>
                                         require.config({ paths: { "vs": "https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.45.0/min/vs/" } });
-                                        
+
                                         require(["vs/editor/editor.main"], function () {
                                           var editor = monaco.editor.create(document.getElementById("editor"), {
                                             value: file,
@@ -72,11 +69,11 @@ pub fn Monaco() -> impl IntoView {
                                             theme: "vs-dark" ,
                                             lineNumbers: "on"//
                                           });
-                                        
-                                        
+
+
                                         });
 
-                                    // 
+                                    //
 
                                     </Script>
                                 }
@@ -84,20 +81,11 @@ pub fn Monaco() -> impl IntoView {
                     })
             }}
 
-        // 
+        //
 
         </Suspense>
     }
 }
-
-
-
-
-
-
-
-
-
 
 #[component]
 pub fn CreateBranch() -> impl IntoView {

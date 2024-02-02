@@ -5,27 +5,16 @@ use leptos::server;
 #[server(CreateS3Bucket)]
 pub async fn create_bucket(bucket_name: String) -> Result<String, ServerFnError> {
     use crate::git_func::{
-        checkout_branch, clone_repo, commit_changes, create_new_branch, create_pull_request,
-        delete_comitted_change, git_add_file, push_to_repository, PullRequest,
+        checkout_branch, clone_repo, commit_changes, create_new_branch, delete_comitted_change,
+        git_add_file, push_to_repository,
     };
     use crate::pages::s3::new_bucket::new_bucket;
     use dotenvy_macro::dotenv;
     use std::path::Path;
     const REPO_PATH: &str = dotenv!("REPO_DIR");
 
-    let branch_name = bucket_name.to_string(); // Replace with your branch name
-    let pull_request = PullRequest {
-        title: branch_name.to_string(),
-        description: format!("Creating new Bucket: {}", branch_name).to_string(),
-        source_branch: branch_name.to_string(),
-        destination_branch: "master".to_string(),
-        base_url: "bitbucket.org".to_string(),
-        project_key: "netreo".to_string(),
-        repository_slug: "terraform".to_string(),
-    };
-
-    let url_base = pull_request.base_url.to_string();
-    // The URL of the Git repository you want to clone
+    let branch_name = bucket_name.to_string(); //
+    let url_base ="https://bitbucket.org/netreo/terraform/".to_string(); //
     let repo_url = format!("https://{}/netreo/terraform", url_base);
 
     let branch_dir = format!("{}/tf/{}", REPO_PATH, branch_name);
@@ -126,11 +115,6 @@ pub async fn create_bucket(bucket_name: String) -> Result<String, ServerFnError>
         return Err(leptos::ServerFnError::ServerError(e));
     }
 
-    if let Err(err) = create_pull_request(pull_request).await {
-        eprintln!("Error: {:?}", err);
-        let e = err.to_string();
-        return Err(leptos::ServerFnError::ServerError(e));
-    }
     let return_message = format!("{} Created Successfully", &branch_name);
     Ok(return_message)
 }

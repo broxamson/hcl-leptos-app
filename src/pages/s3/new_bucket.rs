@@ -1,15 +1,14 @@
-use cfg_if::cfg_if;
-
-cfg_if! { if #[cfg(feature = "ssr")] {
-
-use std::fs::{File, OpenOptions};
-use std::io;
-use std::io::{Read, Seek, Write};
+#[cfg(feature = "ssr")]
 use hcl::{Block, Body};
+#[cfg(feature = "ssr")]
+use std::fs::{File, OpenOptions};
+#[cfg(feature = "ssr")]
+use std::io;
+#[cfg(feature = "ssr")]
+use std::io::{Read, Seek, Write};
 
-
+#[cfg(feature = "ssr")]
 pub fn new_bucket(bucket_name: &str) {
-
     let bucketname = bucket_name;
 
     let json_str = format!(
@@ -144,7 +143,7 @@ pub fn new_bucket(bucket_name: &str) {
 
     println!("HCL code has been written to {:?}.", &file);
 }
-
+#[cfg(feature = "ssr")]
 pub fn clean_file(file_path: &str) -> io::Result<()> {
     // Open the file for reading and writing
     let mut file = OpenOptions::new().read(true).write(true).open(file_path)?;
@@ -171,5 +170,3 @@ pub fn clean_file(file_path: &str) -> io::Result<()> {
 
     Ok(())
 }
-}
-    }

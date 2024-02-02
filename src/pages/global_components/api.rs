@@ -58,12 +58,18 @@ pub async fn make_branch(branch_name: String) -> Result<String, ServerFnError> {
 #[server()]
 pub async fn list_directory(directory_path: String) -> Result<Vec<String>, ServerFnError> {
     extern crate glob;
-    use glob::glob;
     use dotenvy_macro::dotenv;
+    use glob::glob;
 
     let dir = dotenv!("REPO_DIR");
     dbg!(&dir);
-    let path = {if directory_path.is_empty() { "" } else { &directory_path }};
+    let path = {
+        if directory_path.is_empty() {
+            ""
+        } else {
+            &directory_path
+        }
+    };
     let full_path = format!("{}/{}", dir, path);
     let directory_path_glob = format!("{}/*", full_path);
 
@@ -80,7 +86,6 @@ pub async fn list_directory(directory_path: String) -> Result<Vec<String>, Serve
 
     dbg!(&files);
     if Some(&files).is_some() {
-
         Ok(files)
     } else {
         let e = "No Files Found".to_string();
@@ -88,12 +93,11 @@ pub async fn list_directory(directory_path: String) -> Result<Vec<String>, Serve
     }
 }
 
-
 #[server()]
 pub async fn open_hcl_file(tf_file: String) -> Result<String, ServerFnError> {
-    use std::fs::{ OpenOptions};
+    use std::fs::OpenOptions;
 
-    use std::io::{Read};
+    use std::io::Read;
     let _path = tf_file;
 
     let mut file = OpenOptions::new().read(true).write(true).open("temp.tf")?;
@@ -106,17 +110,16 @@ pub async fn open_hcl_file(tf_file: String) -> Result<String, ServerFnError> {
 }
 #[server()]
 pub async fn save_hcl_file(modified_content: String) -> Result<String, ServerFnError> {
-    use std::fs::{ OpenOptions};
+    use std::fs::OpenOptions;
 
-   use std::io::{ Write};
+    use std::io::Write;
     let mut file = OpenOptions::new().read(true).write(true).open("test.tf")?;
 
-        // Read the file contents into a string
+    // Read the file contents into a string
 
-   file.write_all(modified_content.as_bytes())?;
+    file.write_all(modified_content.as_bytes())?;
 
-        // Close the file explicitly (not required, but good practice)
-   file.sync_all()?;
-   Ok("".to_string())
-
+    // Close the file explicitly (not required, but good practice)
+    file.sync_all()?;
+    Ok("".to_string())
 }

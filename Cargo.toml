@@ -7,23 +7,19 @@ edition = "2021"
 crate-type = ["cdylib", "rlib"]
 
 [dependencies]
-axum = { version = "0.6.4", optional = true }
+axum = { version = "0.7", optional = true }
 console_error_panic_hook = "0.1"
-console_log = "1"
-cfg-if = "1"
-leptos = { version = "0.5", features = ["nightly"] }
-leptos_axum = { version = "0.5", optional = true }
-leptos_meta = { version = "0.5", features = ["nightly"] }
-leptos_router = { version = "0.5", features = ["nightly"] }
-log = "0.4"
-simple_logger = "4"
-tokio = { version = "1.25.0", optional = true }
-tower = { version = "0.4.13", optional = true }
-tower-http = { version = "0.4", features = ["fs"], optional = true }
+leptos = { version = "0.6", features = ["nightly"] }
+leptos_axum = { version = "0.6", optional = true }
+leptos_meta = { version = "0.6", features = ["nightly"] }
+leptos_router = { version = "0.6", features = ["nightly"] }
+tokio = { version = "1", features = ["rt-multi-thread"], optional = true }
+tower = { version = "0.4", optional = true }
+tower-http = { version = "0.5", features = ["fs"], optional = true }
 wasm-bindgen = "=0.2.89"
-thiserror = "1.0.38"
-tracing = { version = "0.1.37", optional = true }
-http = "0.2.8"
+thiserror = "1"
+tracing = { version = "0.1", optional = true }
+http = "1"
 reqwest = { version = "0.11.22", features = ["json", "serde_json"] }
 anyhow = "1.0.75"
 serde_json = "1.0.107"
@@ -35,8 +31,6 @@ dotenvy_macro = { version = "0.15.7", optional = true }
 rusoto_core = { version = "0.48.0", optional = true }
 rusoto_ec2 = { version = "0.48.0", optional = true }
 glob = { version ="0.3.1", optional = true }
-
-
 
 [features]
 hydrate = ["leptos/hydrate", "leptos_meta/hydrate", "leptos_router/hydrate"]
@@ -57,6 +51,7 @@ ssr = [
     "dep:rusoto_core",
     "dep:rusoto_ec2",
     "dep:glob",
+
 ]
 
 # Defines a size-optimized profile for the WASM bundle in release mode
@@ -67,11 +62,9 @@ lto = true
 codegen-units = 1
 panic = "abort"
 
-
-
 [package.metadata.leptos]
 # The name used by wasm-bindgen/cargo-leptos for the JS/WASM bundle. Defaults to the crate name
-output-name = "noxide-fe"
+output-name = "upgrade"
 
 # The site root folder is where cargo-leptos generate all output. WARNING: all content of this folder will be erased on a rebuild. Use it in your server setup.
 site-root = "target/site"
