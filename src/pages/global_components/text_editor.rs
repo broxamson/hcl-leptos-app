@@ -132,12 +132,14 @@ pub fn CreateBranch() -> impl IntoView {
 #[component]
 pub fn HCLEditor() -> impl IntoView {
     use monaco::{api::{CodeEditorOptions, CodeEditor}, sys::editor::BuiltinTheme};
+
     let tf_dir = "".to_string();
-    let node_ref = create_node_ref();
+
     let js_clouse = Closure::<dyn Fn()>::new(|| ());
     let terraform_file = create_resource(move || tf_dir.clone(), open_hcl_file);
-    let file = terraform_file.get();
-    node_ref.on_load(move |_| {
+
+    create_effect(move |_| {
+        let file = terraform_file.get();
         let options = CodeEditorOptions::default()
             .with_language("hcl".to_owned())
             .with_value(file.expect("text").unwrap())
@@ -147,13 +149,12 @@ pub fn HCLEditor() -> impl IntoView {
         let e = CodeEditor::create(&div(), Some(options));
         let key_code = (KeyMod::win_ctrl() as u32) | KeyCode::Enter.to_value(); // | (KeyMod::ctrl_cmd() as u32);
         e.as_ref()
-            .add_command(key_code.into(), js_clouse.as_ref().unchecked_ref(), None);
-
-    });
-    div()
-        .node_ref(node_ref)
-
-
+            .add_command(key_code.into(), js_clouse.as_ref().unchecked_ref(), None)
+    }
+    );
+       view! {
+        <div id="editor" style="height:400px;border:1px solid black;"></div>
+       }
 }
 
 
