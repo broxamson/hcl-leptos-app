@@ -2,7 +2,7 @@ use leptos::*;
 
 #[component]
 pub fn ManageS3() -> impl IntoView {
-    use crate::pages::global_components::text_editor::Monaco;
+    use crate::pages::global_components::text_editor::{Monaco, HCLEditor};
     use crate::pages::s3::components::CreateS3;
 
     view! {
@@ -13,5 +13,6 @@ pub fn ManageS3() -> impl IntoView {
         <h2>"Edit S3 Files"</h2>
 
         <Monaco/>
+        <HCLEditor/>
     }
 }

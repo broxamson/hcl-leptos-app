@@ -1712,6 +1712,18 @@ dependencies = [
 ]
 
 [[package]]
+name = "monaco"
+version = "0.4.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "e304ba3719ba5fac0e1dfe1ad218cf4169352c28e715826c60c5aa04f956c10c"
+dependencies = [
+ "js-sys",
+ "paste",
+ "wasm-bindgen",
+ "web-sys",
+]
+
+[[package]]
 name = "multer"
 version = "3.0.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1774,6 +1786,7 @@ dependencies = [
  "leptos_axum",
  "leptos_meta",
  "leptos_router",
+ "monaco",
  "reqwest",
  "rusoto_core",
  "rusoto_ec2",

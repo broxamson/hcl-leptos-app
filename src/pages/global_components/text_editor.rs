@@ -1,6 +1,13 @@
 use crate::pages::global_components::api::{make_branch, open_hcl_file};
 use leptos::*;
+use leptos::html::div;
+
 use leptos_meta::*;
+
+use monaco::sys::{KeyCode, KeyMod};
+use wasm_bindgen::closure::Closure;
+use wasm_bindgen::JsCast;
+
 
 #[component]
 pub fn Monaco() -> impl IntoView {
@@ -61,7 +68,7 @@ pub fn Monaco() -> impl IntoView {
                                 view! {
                                     <Script>
                                         require.config({ paths: { "vs": "https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.45.0/min/vs/" } });
-
+                                        
                                         require(["vs/editor/editor.main"], function () {
                                           var editor = monaco.editor.create(document.getElementById("editor"), {
                                             value: file,
@@ -69,11 +76,15 @@ pub fn Monaco() -> impl IntoView {
                                             theme: "vs-dark" ,
                                             lineNumbers: "on"//
                                           });
-
-
+                                        
+                                        
                                         });
 
-                                    //
+                                    // 
+
+                                    // 
+
+                                    // 
 
                                     </Script>
                                 }
@@ -81,7 +92,7 @@ pub fn Monaco() -> impl IntoView {
                     })
             }}
 
-        //
+        // 
 
         </Suspense>
     }
@@ -117,3 +128,34 @@ pub fn CreateBranch() -> impl IntoView {
         <p>{status}</p>
     }
 }
+
+#[component]
+pub fn HCLEditor() -> impl IntoView {
+    use monaco::{api::{CodeEditorOptions, CodeEditor}, sys::editor::BuiltinTheme};
+    let tf_dir = "".to_string();
+    let node_ref = create_node_ref();
+    let js_clouse = Closure::<dyn Fn()>::new(|| ());
+    let terraform_file = create_resource(move || tf_dir.clone(), open_hcl_file);
+    let file = terraform_file.get();
+    node_ref.on_load(move |_| {
+        let options = CodeEditorOptions::default()
+            .with_language("hcl".to_owned())
+            .with_value(file.expect("text").unwrap())
+            .with_builtin_theme(BuiltinTheme::VsDark)
+            .with_automatic_layout(true);
+
+        let e = CodeEditor::create(&div(), Some(options));
+        let key_code = (KeyMod::win_ctrl() as u32) | KeyCode::Enter.to_value(); // | (KeyMod::ctrl_cmd() as u32);
+        e.as_ref()
+            .add_command(key_code.into(), js_clouse.as_ref().unchecked_ref(), None);
+
+    });
+    div()
+        .node_ref(node_ref)
+
+
+}
+
+
+
+
